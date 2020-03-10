@@ -4,7 +4,7 @@ import once from 'lodash/once';
 import { omitBy, isNil } from 'lodash/fp';
 import uuid from 'uuid';
 
-export default class OTPublisher extends Component {
+class OTPublisher extends Component {
   constructor(props, context) {
     super(props);
 
@@ -110,7 +110,17 @@ export default class OTPublisher extends Component {
     const properties = this.props.properties || {};
     let container;
 
-    if (properties.insertDefaultUI !== false) {
+    if (properties.width && properties.height) {
+      // Using defined settings
+      container = document.createElement('div');
+      container.setAttribute('class', 'OTPublisherContainer');
+      container.style.setProperty('width', properties.width);
+      container.style.setProperty('height', properties.height);
+      this.node.appendChild(container);
+    } else {
+      // This is a default setting.
+      // The width is 264 pixels and the height is 198 pixels.
+      // https://tokbox.com/developer/guides/customize-ui/js/
       container = document.createElement('div');
       container.setAttribute('class', 'OTPublisherContainer');
       this.node.appendChild(container);
@@ -170,11 +180,19 @@ export default class OTPublisher extends Component {
   }
 
   render() {
-    return <div ref={(node) => { this.node = node; }} />;
+    return (
+      <div 
+        className={this.props.className}
+        style={this.props.style}
+        ref={(node) => { this.node = node; }} 
+      />
+    );
   }
 }
 
 OTPublisher.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.object,
   session: PropTypes.shape({
     connection: PropTypes.shape({
       connectionId: PropTypes.string,
@@ -211,3 +229,5 @@ OTPublisher.contextTypes = {
     unpublish: PropTypes.func,
   }),
 };
+
+export default OTPublisher;

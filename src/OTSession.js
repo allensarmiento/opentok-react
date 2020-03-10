@@ -70,15 +70,25 @@ export default class OTSession extends Component {
   }
 
   render() {
-    return <div>{this.props.children}</div>;
+    return (
+      <div 
+        className={this.props.className}
+        style={this.props.style}
+      >
+        {this.props.children}
+      </div>
+    );
   }
 }
 
 OTSession.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.element,
-    PropTypes.arrayOf(PropTypes.element),
-  ]).isRequired,
+  // children: PropTypes.oneOfType([
+  //   PropTypes.element,
+  //   PropTypes.arrayOf(PropTypes.element),
+  // ]).isRequired,
+  // children: PropTypes.any,
+  className: PropTypes.string,
+  style: PropTypes.object,
   apiKey: PropTypes.string.isRequired,
   sessionId: PropTypes.string.isRequired,
   token: PropTypes.string.isRequired,

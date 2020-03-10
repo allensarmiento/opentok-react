@@ -1,4 +1,4 @@
-export default function createSession({
+function createSession({
   apiKey,
   sessionId,
   token,
@@ -6,17 +6,9 @@ export default function createSession({
   onConnect,
   onError,
 } = {}) {
-  if (!apiKey) {
-    throw new Error('Missing apiKey');
-  }
-
-  if (!sessionId) {
-    throw new Error('Missing sessionId');
-  }
-
-  if (!token) {
-    throw new Error('Missing token');
-  }
+  if (!apiKey) { throw new Error('Missing apiKey'); }
+  if (!sessionId) { throw new Error('Missing sessionId'); }
+  if (!token) { throw new Error('Missing token'); }
 
   let streams = [];
 
@@ -56,23 +48,23 @@ export default function createSession({
     }
   });
 
-  return {
-    session,
-    streams,
-    disconnect() {
-      if (session) {
-        session.off(eventHandlers);
-        session.disconnect();
-      }
+  let disconnect = () => {
+    if (session) {
+      session.off(eventHandlers);
+      session.disconnect();
+    }
 
-      streams = null;
-      onStreamCreated = null;
-      onStreamDestroyed = null;
-      eventHandlers = null;
-      session = null;
+    streams = null;
+    onStreamCreated = null;
+    onStreamDestroyed = null;
+    eventHandlers = null;
+    session: null;
 
-      this.session = null;
-      this.streams = null;
-    },
-  };
+    this.session = null;
+    this.streams = null;
+  }
+
+  return { session, streams, disconnect };
 }
+
+export default createSession;

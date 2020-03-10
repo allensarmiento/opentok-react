@@ -10,7 +10,7 @@ This higher-order component will load the OpenTok client thru a script tag.
 It will render its inner component only when the OpenTok client has loaded.
 In the meantime, it will render a loading element chosen by the developer.
 */
-export default function preloadScript(InnerComponent) {
+function preloadScript(InnerComponent) {
   class PreloadScript extends Component {
     constructor(props) {
       super(props);
@@ -18,6 +18,7 @@ export default function preloadScript(InnerComponent) {
       this.state = {
         scriptLoaded: typeof OT !== 'undefined',
       };
+
       this.isPresent = false;
     }
 
@@ -34,6 +35,7 @@ export default function preloadScript(InnerComponent) {
       scriptjs(scriptUrl, this.onScriptLoad);
     }
 
+    // NOTE: componentWillUnmount may not be a lifecycle method
     componentWillUnmount() {
       this.isPresent = false;
     }
@@ -56,10 +58,12 @@ export default function preloadScript(InnerComponent) {
   }
 
   PreloadScript.displayName = `preloadScript(${getDisplayName(InnerComponent)})`;
+
   PreloadScript.propTypes = {
     opentokClientUrl: PropTypes.string,
     loadingDelegate: PropTypes.node,
   };
+
   PreloadScript.defaultProps = {
     opentokClientUrl: DEFAULT_SCRIPT_URL,
     loadingDelegate: <div />,
@@ -67,3 +71,5 @@ export default function preloadScript(InnerComponent) {
 
   return PreloadScript;
 }
+
+export default preloadScript;
