@@ -53,6 +53,13 @@ export default class OTSubscriber extends Component {
 
     const container = document.createElement('div');
     container.setAttribute('class', 'OTSubscriberContainer');
+
+    // TODO: Should check for width and height individually
+    if (this.props.properties.width && this.props.properties.height) {
+      container.style.setProperty('width', this.props.properties.width);
+      container.style.setProperty('height', this.props.properties.height);
+    }
+
     this.node.appendChild(container);
 
     this.subscriberId = uuid();
@@ -106,11 +113,19 @@ export default class OTSubscriber extends Component {
   }
 
   render() {
-    return <div ref={(node) => { this.node = node; }} />;
+    return (
+      <div 
+        className={this.props.className}
+        style={this.props.style}
+        ref={(node) => { this.node = node; }} 
+      />
+    );
   }
 }
 
 OTSubscriber.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.object,
   stream: PropTypes.shape({
     streamId: PropTypes.string,
   }),
