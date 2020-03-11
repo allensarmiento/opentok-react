@@ -10,7 +10,8 @@
     "build": "babel src --out-dir dist",
     "lint": "eslint src test",
     "example": "cd example && browserify -o bundle.js app.js && python -m SimpleHTTPServer",
-    "basic-client-example": "cd basic-client-example && browserify -o bundle.js app.js && python -m SimpleHTTPServer"
+    "basic-client-example-style": "cd basic-client-example-style && browserify -o bundle.js app.js && python -m SimpleHTTPServer",
+    "basic-client-example-classnames": "cd basic-client-example-classnames && browserify -o bundle.js app.js && python -m SimpleHTTPServer"
   },
   "keywords": [
     "tokbox",
