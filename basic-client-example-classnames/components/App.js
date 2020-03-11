@@ -49,7 +49,7 @@ class App extends Component {
               // screen capture
               videoSource: undefined, 
               // These were added
-              insertMode: 'append',
+              //insertMode: 'append',
               width: '100%',
               height: '100%'
             }}
