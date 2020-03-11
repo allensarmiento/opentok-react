@@ -110,13 +110,24 @@ class OTPublisher extends Component {
     const properties = this.props.properties || {};
     let container;
 
-    if (properties.width && properties.height) {
-      // Using defined settings
-      container = document.createElement('div');
-      container.setAttribute('class', 'OTPublisherContainer');
-      container.style.setProperty('width', properties.width);
-      container.style.setProperty('height', properties.height);
-      this.node.appendChild(container);
+    // NOTE: If the insert mode is append, the default value setting
+    // for the video will be used.
+    // 
+    // insertMode = 'append': The video element will be rendered after
+    // the OTPublisherContainer, having the default value.
+    //
+    // insertMode = undefined: The video element will be the 
+    // OTPublisherContainer, accepting the width and height properties 
+    // given to it.
+    if (properties.insertMode === 'append' && 
+      properties.width && 
+      properties.height) {
+        // Using defined settings
+        container = document.createElement('div');
+        container.setAttribute('class', 'OTPublisherContainer');
+        container.style.setProperty('width', properties.width);
+        container.style.setProperty('height', properties.height);
+        this.node.appendChild(container);
     } else {
       // This is a default setting.
       // The width is 264 pixels and the height is 198 pixels.
