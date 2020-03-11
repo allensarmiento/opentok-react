@@ -2,3 +2,8 @@ node_modules/
 dist/
 example/bundle.js
 example/config.js
+basic-client-example/bundle.js
+basic-client-example/config.js
+basic-client-example-classnames/bundle.js
+basic-client-example-classnames/config.js
+.DS_Store
