@@ -1,9 +1,6 @@
-node_modules/
-dist/
-example/bundle.js
-example/config.js
-basic-client-example-style/bundle.js
-basic-client-example-style/config.js
-basic-client-example-classnames/bundle.js
-basic-client-example-classnames/config.js
-.DS_Store
+**/node_modules/
+**/dist/
+**/bundle.js
+**/config.js
+**/.env
+**/.DS_Store
