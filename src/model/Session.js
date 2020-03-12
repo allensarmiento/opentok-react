@@ -72,9 +72,31 @@ function createSession({
     if (!session) { return; }
 
     if (err && typeof onError === 'function') {
-
+      onError(err);
+    } else if (!err && typeof onConnect === 'function') {
+      onConnect();
     }
   });
+
+  let disconnect = () => {
+    if (session) {
+      session.off(eventHandlers);
+      session.disconnect();
+    }
+
+    streams = null;
+    onStreamCreated = null;
+    onStreamDestroyed = null;
+    eventHandlers = null;
+    session = null;
+
+    // ? Not sure if this this.session and session refer to the same
+    // ? variable.
+    this.session = null;
+    this.streams = null;
+  };
+
+  return { session, streams, disconnect };
 }
 
 export default createSession;

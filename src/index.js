@@ -5,7 +5,8 @@ import OTSession from './OTSession';
 import OTPublisher from './OTPublisher';
 import OTStreams from './OTStreams';
 import OTSubscriber from './OTSubscriber';
-import createSession from './createSession';
+// import createSession from './createSession';
+import createSession from './model/Session';
 import preloadScript from './preloadScript';
 
 export default {
