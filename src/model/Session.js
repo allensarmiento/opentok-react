@@ -1,102 +1,80 @@
-class Session {
-  constructor({apiKey, sessionId, token, onStreamsUpdated, onConnect, onError} = {}) {
-    if (!apiKey) { throw new Error('Missing apiKey'); }
-    if (!sessionId) { throw new Error('Missing sessionId') };
-    if (!token) { throw new Error('Missing token'); }
+/**
+ * Returns a -1 if the event.stream.id is not found in the streams
+ * array, else returns the index the id is found.
+ */
+function getStreamIndex(streams, eventStreamId) {
+  const wantedId = eventStreamId; 
+  const index = streams.findIndex(
+    stream => stream.id === wantedId
+  );
+  return index;
+}
 
-    this.apiKey = apiKey;
-    this.sessionId = sessionId;
-    this.token = token;
-    this.onStreamsUpdated = onStreamsUpdated;
-    this.onConnect = onConnect;
-    this.onError = onError;
-
-    this.session = null;
-    this.eventHandlers = {};
-    this.streams = [];
+/**
+ * If the stream id is not found, the event is added to the streams
+ * array.
+ * @param {array} streams 
+ * @param {*} event
+ * @param {func} onStreamsUpdated
+ */
+function onStreamCreated(streams, event, onStreamsUpdated) {
+  const index = getStreamIndex(streams, event.stream.id);
+  if (index < 0) {
+    streams.push(event.stream);
+    onStreamsUpdated(streams);
   }
+  return streams;
+}
 
-  setSession(session) {
-    this.session = session;
-  }
-
-  getSession() {
-    return this.session;
-  }
-
-  getStreams() {
-    return this.streams;
-  }
-
-  getStreamIndex(eventStreamId) {
-    // event.stream.id is the element we are looking for.
-    // If event.stream.id is not found in the streams array, a value
-    // of -1 is returned.
-    const index = this.streams.findIndex(
-      stream => stream.id === event.stream.id
-    );
-
-    return index;
-  }
-
-  onStreamCreated(event) {
-    const index = this.getStreamIndex(event.stream.id);
-
-    if (index < 0) {
-      // event.stream.id was not found, so this must be a new stream.
-      this.streams.push(event.stream);
-      onStreamsUpdated(this.streams);
-    }
-  }
-
-  onStreamDestroyed(event) {
-    const index = this.getStreamIndex(event.stream.id);
-
-    if (index >= 0) {
-      this.streams.splice(index, 1);
-      onStreamsUpdated(streams);
-    }
-  }
-
-  disconnect(eventHandlers) {
-    if (this.session) {
-      this.session.off(eventHandlers);
-      this.session.disconnect();
-
-      this.streams = null;
-      this.onStreamCreated = null;
-      this.onStreamDestroyed = null;
-      this.eventHandlers = null;
-      this.session = null;
-    }
-  }
-
-  createSession() {
-    // apiKey, sessionId, and token are verified in the constructor,
-    // so should not have to check again.
-
-    this.eventHandlers = {
-      streamCreated: onStreamCreated,
-      streamDestroyed: onStreamDestroyed
-    };
-
-    // Initialize the opentok session.
-    this.session = OT.initSession(this.apiKey, this.sessionId);
-    this.session.on(eventHandlers);
-    this.session.connect(token, err => {
-      if (!session) {
-        // Either the session has been disconnected or OTSession
-        // has been unmounted so don't invoke any callbacks.
-        return;
-      }
-
-      if (err && typeof this.onError === 'function') {
-        this.onError(err);
-      } else if (!err && typeof this.onConnect === 'function') {
-        this.onConnect();
-      }
-    });
+/**
+ * If the stream id is found, the event is deleted from the streams 
+ * array.
+ * @param {array} streams 
+ * @param {*} event
+ * @param {func} onStreamsUpdated
+ */
+function onStreamDestroyed(streams, event, onStreamsUpdated) {
+  const index = getStreamIndex(streams, event.stream.id);
+  if (index >= 0) {
+    streams.splice(index, 1);
+    onStreamsUpdated(streams);
   }
 }
 
-export default Session;
+function createSession({
+  apiKey,
+  sessionId,
+  token,
+  onStreamsUpdated,
+  onConnect,
+  onError
+} = {}) {
+  if (!apiKey) { throw new Error('Missing apiKey'); }
+  if (!sessionId) { throw new Error('Missing sessionId'); }
+  if (!token) { throw new Error('Missing token'); }
+
+  // Publisher and subscriber streams
+  let streams = [];
+
+  let eventHandlers = {
+    streamCreated: onStreamCreated,
+    streamDestroyed: onStreamDestroyed
+  };
+
+  // Initializes and returns the local session object for a specified
+  // session ID.
+  let session = OT.initSession(apiKey, sessionId);
+  session.on(eventHandlers);
+  session.connect(token, err => {
+    // If there is no session, either this session has been
+    // disconnected or OTSession has been unmounted so don't invoke
+    // any callbacks.
+    if (!session) { return; }
+
+    if (err && typeof onError === 'function') {
+
+    }
+  });
+}
+
+export default createSession;

@@ -11,7 +11,7 @@ class OTSession extends Component {
 
   getChildContext() {
     return {
-      session: this.sessionHelper.getSession(),
+      session: this.sessionHelper.getSession || null,
       streams: this.state.streams
     };
   }

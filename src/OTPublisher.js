@@ -114,7 +114,7 @@ class OTPublisher extends Component {
     // for the video will be used.
     // 
     // insertMode = 'append': The video element will be rendered after
-    // the OTPublisherContainer, having the default value.
+    // the OTPublisherContainer, having the default width and height.
     //
     // insertMode = undefined: The video element will be the 
     // OTPublisherContainer, accepting the width and height properties 
